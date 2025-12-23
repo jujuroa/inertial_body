@@ -1,0 +1,5 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/inertial_bodyTargets.cmake")
+
+check_required_components(inertial_body)

@@ -10,9 +10,7 @@
 
 #include <cmath>
 
-#include "logger/Logger.h"
-
-namespace easing {
+namespace inertial_body {
 
 class InertialBody {
  public:
@@ -22,28 +20,29 @@ class InertialBody {
     double velocity;
     double accelation;
 
-    InertialState(double _target = .0, double _position = .0,
-                  double _velocity = .0, double _accelation = .0)
-        : target(_target),
-          position(_position),
-          velocity(_velocity),
-          accelation(_accelation) {}
+    InertialState(double _target = .0,
+                  double _position = .0,
+                  double _velocity = .0,
+                  double _accelation = .0)
+        : target(_target), position(_position), velocity(_velocity), accelation(_accelation) {}
     void reset() {
       target = .0;
       position = .0;
       velocity = .0;
       accelation = .0;
     }
-    void step(double _accelation){
-    	accelation = _accelation;
-    	velocity += accelation;
-    	position += velocity;
+    void step(double _accelation) {
+      accelation = _accelation;
+      velocity += accelation;
+      position += velocity;
     }
     double getDistance() { return target - position; }
   };
 
-  InertialBody(double _elasticity = .5, double _friction = .5,
-               double _mass = .5, double _distanceExponent = 0);
+  InertialBody(double _elasticity = .5,
+               double _friction = .5,
+               double _mass = .5,
+               double _distanceExponent = 0);
 
   virtual ~InertialBody();
 
@@ -69,6 +68,6 @@ class InertialBody {
   double distanceExponent;
 };
 
-} /* namespace easing */
+}  // namespace inertial_body
 
 #endif /* INERTIALBODY_H_ */

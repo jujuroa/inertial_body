@@ -9,6 +9,7 @@ Run:
 from collections import deque
 import sys
 import numpy as np
+import inertial_body_py as ib
 
 from PyQt6 import QtCore, QtWidgets
 import pyqtgraph as pg

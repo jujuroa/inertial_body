@@ -5,7 +5,7 @@ find_package(pybind11 CONFIG REQUIRED)
 find_package(inertial_body CONFIG REQUIRED)
 
 pybind11_add_module(${PROJECT_NAME}
-    bindings.cpp
+    inertial_body_py/bindings.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -14,5 +14,6 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
+    OUTPUT_NAME "inertial_body_py"
     CXX_STANDARD 17
 )

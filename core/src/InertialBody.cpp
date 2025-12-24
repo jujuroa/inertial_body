@@ -53,4 +53,7 @@ double InertialBody::getMass() const { return mass; }
 
 void InertialBody::setMass(double mass) { this->mass = mass; }
 
+void InertialBody::setTarget(double target) { this->currentStatus.target = target; }
+
+void InertialBody::reset() { this->currentStatus.reset(); }
 }  // namespace inertial_body

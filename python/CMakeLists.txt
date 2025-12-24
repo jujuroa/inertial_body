@@ -17,3 +17,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME "inertial_body_py"
     CXX_STANDARD 17
 )
+
+install(
+  TARGETS inertial_body_py
+  LIBRARY DESTINATION inertial_body_py
+)

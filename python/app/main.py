@@ -22,43 +22,29 @@ class SpringSimulator(QtCore.QObject):
 
     def __init__(self, k=1, c=0.2, mass=0.01, target=1, de=0, dt=0.01):
         super().__init__()
-        self.elasticity = float(k)
-        self.friction = float(c)
-        self.mass = float(mass)
-        self.target = int(target)
-        self.dt = float(dt)
-        self.distance_exponent = float(de)
-
-        self.pos = 0.0
-        self.vel = 0.0
+        self.body = ib.InertialBody(
+            elasticity=float(k),
+            friction=float(c),
+            mass=float(mass),
+            distance_exponent=float(de) + 1.0
+        )
+        self.body.set_target(float(target))
 
         # option to pause internal stepping (controller handles running)
         self._running = False
 
     def reset(self, pos=0.0, vel=0.0):
-        self.pos = float(pos)
-        self.vel = float(vel)
+        self.body.reset(pos, vel)
 
     def step(self):
         """Single physics step (explicit Euler)."""
-        # distance
-        d = self.target - self.pos
-
-        # normalize distance exponent
-        p = min(max(self.distance_exponent, -1), 1) + 1
-
-        spring = self.elasticity * np.sign(d) * abs(d) ** p
-        damping = - self.friction * self.vel
-
-        # acceleration = total force / mass
-        accel = (spring + damping) / self.mass
-
-        # integrate
-        self.vel += accel * self.dt
-        self.pos += self.vel * self.dt
-
-        # emit new state
-        self.updated.emit(self.pos, self.vel, accel)
+        state = self.body.step()
+        self.updated.emit(
+            state.target,
+            state.position,
+            state.velocity,
+            state.acceleration
+        )
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -108,35 +94,35 @@ class MainWindow(QtWidgets.QMainWindow):
         self.k_spin = QtWidgets.QDoubleSpinBox()
         self.k_spin.setRange(0.01, 1)
         self.k_spin.setSingleStep(0.01)
-        self.k_spin.setValue(self.sim.elasticity)
+        self.k_spin.setValue(self.sim.body.elasticity)
         ctrl_layout.addRow("elasticity", self.k_spin)
 
         # c (damping/friction)
         self.c_spin = QtWidgets.QDoubleSpinBox()
         self.c_spin.setRange(0.01, 1)
         self.c_spin.setSingleStep(0.01)
-        self.c_spin.setValue(self.sim.friction)
+        self.c_spin.setValue(self.sim.body.friction)
         ctrl_layout.addRow("friction", self.c_spin)
 
         # mass
         self.m_spin = QtWidgets.QDoubleSpinBox()
         self.k_spin.setRange(0.01, 1)
         self.m_spin.setSingleStep(0.01)
-        self.m_spin.setValue(self.sim.mass)
+        self.m_spin.setValue(self.sim.body.mass)
         ctrl_layout.addRow("mass", self.m_spin)
 
         # target
         self.target_spin = QtWidgets.QDoubleSpinBox()
         self.target_spin.setRange(0, 1)
         self.target_spin.setSingleStep(0.1)
-        self.target_spin.setValue(self.sim.target)
+        self.target_spin.setValue(self.sim.body.state.target)
         ctrl_layout.addRow("target", self.target_spin)
 
         # distance exponent
         self.de_spin = QtWidgets.QDoubleSpinBox()
         self.de_spin.setRange(-1, 1)
         self.de_spin.setSingleStep(0.1)
-        self.de_spin.setValue(self.sim.distance_exponent)
+        self.de_spin.setValue(self.sim.body.distance_exponent)
         ctrl_layout.addRow("distance exponent (-1 to 1)", self.de_spin)
 
         # control buttons

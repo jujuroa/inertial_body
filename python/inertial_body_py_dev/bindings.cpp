@@ -7,6 +7,7 @@ using namespace inertial_body;
 
 PYBIND11_MODULE(inertial_body_py, m) {
     py::class_<InertialBody::InertialState>(m, "State")
+        .def_readonly("target", &InertialBody::InertialState::target)
         .def_readonly("position", &InertialBody::InertialState::position)
         .def_readonly("velocity", &InertialBody::InertialState::velocity)
         .def_readonly("acceleration", &InertialBody::InertialState::acceleration);
@@ -19,10 +20,11 @@ PYBIND11_MODULE(inertial_body_py, m) {
              py::arg("distance_exponent"))
         .def("step", &InertialBody::step,
              py::return_value_policy::reference_internal)
-        .def("reset", &InertialBody::reset,
-             py::arg("pos") = 0.0,
-             py::arg("vel") = 0.0)
+        .def("reset", &InertialBody::reset)
         .def("set_target", &InertialBody::setTarget)
+		.def_property("target",
+			&InertialBody::getTarget,
+			&InertialBody::setTarget)
         .def_property("elasticity",
             &InertialBody::getElasticity,
             &InertialBody::setElasticity)

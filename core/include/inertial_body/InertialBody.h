@@ -18,22 +18,22 @@ class InertialBody {
     double target;
     double position;
     double velocity;
-    double accelation;
+    double acceleration;
 
     InertialState(double _target = .0,
                   double _position = .0,
                   double _velocity = .0,
-                  double _accelation = .0)
-        : target(_target), position(_position), velocity(_velocity), accelation(_accelation) {}
+                  double _acceleration = .0)
+        : target(_target), position(_position), velocity(_velocity), acceleration(_acceleration) {}
     void reset() {
       target = .0;
       position = .0;
       velocity = .0;
-      accelation = .0;
+      acceleration = .0;
     }
     void step(double _accelation) {
-      accelation = _accelation;
-      velocity += accelation;
+      acceleration = _accelation;
+      velocity += acceleration;
       position += velocity;
     }
     double getDistance() { return target - position; }
@@ -58,6 +58,8 @@ class InertialBody {
   void setFriction(double friction);
   double getMass() const;
   void setMass(double mass);
+  void setTarget(double target);
+  void reset();
 
  private:
   InertialState currentStatus;

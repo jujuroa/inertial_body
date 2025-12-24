@@ -22,3 +22,6 @@ dependencies = [
 build-dir = "build/{wheel_tag}"
 cmake.verbose = true
 cmake.build-type = "Release"
+
+[tool.scikit-build.wheel]
+packages = ["inertial_body_py"]
